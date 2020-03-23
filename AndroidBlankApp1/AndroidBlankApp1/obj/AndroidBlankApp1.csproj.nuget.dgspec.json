@@ -1,0 +1,44 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\ostntin123\\RiderProjects\\AndroidBlankApp1\\AndroidBlankApp1\\AndroidBlankApp1.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\ostntin123\\RiderProjects\\AndroidBlankApp1\\AndroidBlankApp1\\AndroidBlankApp1.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\ostntin123\\RiderProjects\\AndroidBlankApp1\\AndroidBlankApp1\\AndroidBlankApp1.csproj",
+        "projectName": "AndroidBlankApp1",
+        "projectPath": "C:\\Users\\ostntin123\\RiderProjects\\AndroidBlankApp1\\AndroidBlankApp1\\AndroidBlankApp1.csproj",
+        "packagesPath": "C:\\Users\\ostntin123\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\ostntin123\\RiderProjects\\AndroidBlankApp1\\AndroidBlankApp1\\obj\\",
+        "projectStyle": "PackageReference",
+        "skipContentFileWrite": true,
+        "configFilePaths": [
+          "C:\\Users\\ostntin123\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "monoandroid10.0"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "monoandroid10.0": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "monoandroid10.0": {
+          "dependencies": {
+            "Xamarin.Android.Support.Design": {
+              "target": "Package",
+              "version": "[27.0.2.1, )"
+            }
+          }
+        }
+      }
+    }
+  }
+}

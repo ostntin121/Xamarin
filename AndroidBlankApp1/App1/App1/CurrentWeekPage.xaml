@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:App1"
+             x:Class="App1.CurrentWeekPage"
+             Title="Эта неделя">
+    <ContentPage.Content>
+    <StackLayout>
+        <ListView x:Name="DailyPlansList" ItemsSource="{Binding Plans}"
+                  SelectedItem="{Binding SelectedPlan, Mode=TwoWay}" HasUnevenRows="True">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <ViewCell.View>
+                            <StackLayout>
+                                <Label Text="{Binding Title}" FontSize="Medium" />
+                                <Label Text="{Binding Name}" FontSize="Medium" />
+                                <Label TextColor="DarkGray" Text="{Binding Status}" FontSize="Small" />
+                            </StackLayout>
+                        </ViewCell.View>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Button Text="Черновики" Command="{Binding GoToScratchesCommand}"></Button>
+        <Button Text="История" Command="{Binding GoToHistoryCommand}"></Button>
+    </StackLayout>
+        </ContentPage.Content>
+</ContentPage>

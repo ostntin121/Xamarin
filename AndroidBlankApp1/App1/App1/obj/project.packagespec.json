@@ -1,0 +1,62 @@
+﻿{
+  "version": "1.0.0",
+  "restore": {
+    "projectUniqueName": "C:\\Users\\ostntin123\\Desktop\\Xamarin\\AndroidBlankApp1\\App1\\App1\\App1.csproj",
+    "projectName": "App1",
+    "projectPath": "C:\\Users\\ostntin123\\Desktop\\Xamarin\\AndroidBlankApp1\\App1\\App1\\App1.csproj",
+    "outputPath": "C:\\Users\\ostntin123\\Desktop\\Xamarin\\AndroidBlankApp1\\App1\\App1\\obj\\",
+    "projectStyle": "PackageReference",
+    "fallbackFolders": [
+      "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+    ],
+    "originalTargetFrameworks": [
+      "netstandard2.0"
+    ],
+    "sources": {
+      "https://api.nuget.org/v3/index.json": {}
+    },
+    "frameworks": {
+      "netstandard2.0": {
+        "projectReferences": {}
+      }
+    },
+    "warningProperties": {
+      "warnAsError": [
+        "NU1605"
+      ]
+    }
+  },
+  "frameworks": {
+    "netstandard2.0": {
+      "dependencies": {
+        "NETStandard.Library": {
+          "suppressParent": "All",
+          "target": "Package",
+          "version": "[2.0.3, )",
+          "autoReferenced": true
+        },
+        "SQLite.Net-PCL": {
+          "target": "Package",
+          "version": "[3.1.1, )"
+        },
+        "Xamarin.Forms": {
+          "target": "Package",
+          "version": "[3.3.0.912540, )"
+        },
+        "sqlite-net": {
+          "target": "Package",
+          "version": "[1.6.292, )"
+        },
+        "sqlite-net-pcl": {
+          "target": "Package",
+          "version": "[1.6.292, )"
+        }
+      },
+      "imports": [
+        "net461"
+      ],
+      "assetTargetFallback": true,
+      "warn": true
+    }
+  }
+}
