@@ -2,27 +2,26 @@
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="App1.ScratchesPage"
-             Title="Черновики">
+             x:Class="App1.ScratchesPage">
     <ContentPage.Content>
-    <StackLayout>
-        <Button Text="Добавить" Command="{Binding CreateScratchCommand}" />
-        <ListView x:Name="ScratchesList" ItemsSource="{Binding Scratches}"
-                  SelectedItem="{Binding SelectedScratch, Mode=TwoWay}" HasUnevenRows="True">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <ViewCell.View>
-                            <StackLayout>
-                                <Label Text="{Binding Name}" FontSize="Medium" />
-                            </StackLayout>
-                        </ViewCell.View>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-        <Button Text="Эта неделя" Command="{Binding GoToCurrentWeekCommand}"></Button>
-        <Button Text="История" Command="{Binding GoToHistoryCommand}"></Button>
-    </StackLayout>
-        </ContentPage.Content>
+        <StackLayout>
+                <Button Pressed="Button_OnPressed"
+                        Text="Добавить" Style="{StaticResource CenterButton}" BackgroundColor="MediumSeaGreen" 
+                        Command="{Binding CreateScratchCommand}" />
+                <ListView x:Name="ScratchesList" ItemsSource="{Binding Scratches}" ItemTapped="Tasks_ItemTapped"
+                          SelectedItem="{Binding SelectedScratch, Mode=TwoWay}" HasUnevenRows="True">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <ViewCell.View>
+                                    <StackLayout Padding="20,10,20,10">
+                                        <Label Text="{Binding Name}" FontSize="Medium" />
+                                    </StackLayout>
+                                </ViewCell.View>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+    </ContentPage.Content>
 </ContentPage>

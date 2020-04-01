@@ -2,49 +2,54 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:App1"
-             x:Class="App1.DailyPlanPage">
+             x:Class="App1.DailyPlanPage"
+             x:Name="Page">
     <ContentPage.Content>
         <StackLayout>
-            <StackLayout Padding="5,10,5,10">
-                <StackLayout Orientation="Horizontal">
-                    <Label Margin="20,0,20,0" WidthRequest="200" Text="Название" FontSize="13"/>
-                    <Label Margin="20,0,20,0" Text="{Binding Name}" FontSize="13"/>
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Margin="20,0,20,0" WidthRequest="200" Text="Дата прохождения" FontSize="13"/>
-                    <Label Margin="20,0,20,0" Text="{Binding Date}" FontSize="13"/>
-                </StackLayout>
-               <ListView Margin="0,20,0,20" x:Name="TasksList" ItemsSource="{Binding Tasks}"
-                         HasUnevenRows="True" ItemTapped="Tasks_ItemTapped">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell Height="150">
-                                <ViewCell.View>
-                                    <StackLayout>
-                                        <StackLayout Orientation="Horizontal">
-                                            <Label Margin="20,0,10,0" x:Name="taskNameLabel" Text="{Binding Number}" 
-                                                   TextColor="Black" FontSize="13"/>
-                                            <Label Margin="10,0,20,0" x:Key="{Binding Position}" x:Name="taskEntry"
-                                                   Text="{Binding Name}" TextColor="Black" FontSize="13"
-                                            />
+                <StackLayout Padding="5,10,5,10">
+                    <StackLayout Orientation="Horizontal">
+                        <Label Margin="20,10,20,0" Text="Название" HorizontalOptions="StartAndExpand" 
+                               FontSize="16" FontAttributes="Bold" TextColor="Black" />
+                        <Label Margin="20,10,20,0" Text="{Binding Name}" FontSize="13"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Margin="20,10,20,0" Text="Дата прохождения" HorizontalOptions="StartAndExpand"
+                               FontSize="16" FontAttributes="Bold" TextColor="Black" />
+                        <Label Margin="20,10,20,0" Text="{Binding Date}" FontSize="13"/>
+                    </StackLayout>
+                   <ListView Margin="0,20,0,20" x:Name="TasksList" ItemsSource="{Binding Tasks}"
+                             HasUnevenRows="True" ItemTapped="Tasks_ItemTapped">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell Height="100">
+                                    <ViewCell.View>
+                                        <StackLayout>
+                                            <StackLayout Orientation="Horizontal">
+                                                <Label Margin="20,20,5,0" x:Name="taskNameLabel" Text="{Binding Number}" 
+                                                       TextColor="Black" FontSize="13"/>
+                                                <Label Margin="5,20,20,0" x:Key="{Binding Position}" x:Name="taskEntry"
+                                                       Text="{Binding Name}"
+                                                       TextColor="Black" FontSize="13"
+                                                />
+                                            </StackLayout>
+                                            <StackLayout Orientation="Horizontal">
+                                                <Label Margin="20,15,0,0" x:Name="taskCompletedLabel" 
+                                                       Text="Задача завершена?" FontSize="13"/>
+                                                <Switch Margin="10,10,20,0" x:Name="isCompleted" x:Key="{Binding Position}" 
+                                                        IsEnabled="{Binding Source={x:Reference Page}, Path=BindingContext.IsNotExpired}" 
+                                                        IsToggled="{Binding IsCompleted}" /> 
+                                            </StackLayout>
                                         </StackLayout>
-                                        <StackLayout Orientation="Horizontal">
-                                            <Label Margin="20,15,10,0" x:Name="taskCompletedLabel" Text="Задача завершена |" 
-                                                   TextColor="Black" FontSize="13"/>
-                                            <Switch Margin="10,0,20,0" x:Name="isCompleted" x:Key="{Binding Position}" 
-                                                    IsToggled="{Binding IsCompleted}" /> 
-                                        </StackLayout>
-                                    </StackLayout>
-                                </ViewCell.View>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-           </StackLayout>
-            <Button Text="Сохранить" CornerRadius="3" Margin="20" WidthRequest="200" HorizontalOptions="Center"
-                    TextColor="White" BorderColor="Transparent" BackgroundColor="DodgerBlue"
-                    Command="{Binding CurrentWeekViewModel.SaveCommand}" 
-                    CommandParameter="{Binding}" />
-        </StackLayout>
+                                    </ViewCell.View>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+               </StackLayout>
+                <Button IsVisible="{Binding IsNotExpired}" Text="Сохранить" 
+                        Style="{StaticResource CenterButton}"
+                        Command="{Binding WeekViewModel.SavePlanCommand}" 
+                        CommandParameter="{Binding}" />
+            </StackLayout>
     </ContentPage.Content>
 </ContentPage>

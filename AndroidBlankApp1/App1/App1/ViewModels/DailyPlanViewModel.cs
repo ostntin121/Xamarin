@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -16,6 +17,11 @@ namespace App1.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
 
         private CurrentWeekViewModel _weekViewModel;
+        private int _completedTasks;
+        private string _status;
+        private bool _isSuccessful;
+        private bool _highlight;
+        
         private DbContext _dbContext;
 
         public ObservableCollection<TaskViewModel> Tasks { get; set; }
@@ -28,18 +34,24 @@ namespace App1.ViewModels
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
         }
 
-        public DailyPlanViewModel(DbContext dbContext, DailyPlan plan)
+        public DailyPlanViewModel(DbContext dbContext, DailyPlan plan, CurrentWeekViewModel weekViewModel)
         {
             _dbContext = dbContext;
+            WeekViewModel = weekViewModel;
             Plan = plan;
             
             Tasks = new ObservableCollection<TaskViewModel>();
             
             var tasks = _dbContext.Tasks.GetItems()
                 .Where(x => x.PlanId == Plan.Id)
-                .Select((x, i) => new TaskViewModel(x, i));
+                .Select((x, i) => new TaskViewModel(x, i, this));
 
             tasks.ForEach(t => Tasks.Add(t));
+
+            AllTasks = Tasks.Count;
+            CompletedTasks = Tasks.Count(t => t.IsCompleted);
+            Status = GetStatus();
+            IsSuccessful = GetSuccess();
         }
 
         public CurrentWeekViewModel WeekViewModel
@@ -83,21 +95,70 @@ namespace App1.ViewModels
 
         public int CompletedTasks
         {
-            get
+            get { return _completedTasks; }
+            set
             {
-                return Tasks.Count(x => x.IsCompleted);
-            }
-        }
-        
-        public int AllTasks
-        {
-            get
-            {
-                return Tasks.Count;
+                _completedTasks = value; 
+                OnPropertyChanged("CompletedTasks");
             }
         }
 
-        public string Status => $"Выполнено {CompletedTasks} из {AllTasks} задач";
+        private int _allTasks;
+        
+        public int AllTasks
+        {
+            get => _allTasks;
+            set => _allTasks = value;
+        }
+
+        public string Status
+        {
+            get { return _status; }
+            set
+            {
+                _status = value;
+                OnPropertyChanged("Status");
+            }
+        }
+        
+        public string GetStatus()
+        {
+            return $"Выполнено {CompletedTasks} из {AllTasks} задач";
+        }
+
+        public bool IsSuccessful
+        {
+            get { return _isSuccessful; }
+            set
+            {
+                _isSuccessful = value;
+                OnPropertyChanged("IsSuccessful");
+            }
+        }
+
+        public bool Highlight
+        {
+            get { return _highlight; }
+            set
+            {
+                _highlight = value && Date == DateTime.Now.ToShortDateString();
+                OnPropertyChanged("Highlight");
+            }
+        }
+
+        public bool GetSuccess()
+        {
+            return CompletedTasks == AllTasks;
+        }
+        
         public string Title => $"План на {Date}";
+
+        public bool IsNotExpired => !Plan.IsExpired;
+        public void UpdateCompletedTasks()
+        {
+            CompletedTasks = Tasks.Count(t => t.IsCompleted);
+            Status = GetStatus();
+            IsSuccessful = GetSuccess();
+        }
     }
 }

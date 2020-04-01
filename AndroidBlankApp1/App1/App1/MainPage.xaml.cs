@@ -1,20 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿using App1.Data;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace App1
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MainPage : ContentPage
+    public partial class MainPage : TabbedPage
     {
-        public MainPage()
+        public MainPage(DbContext dbContext)
         {
             InitializeComponent();
+
+            var cwp = new CurrentWeekPage(dbContext);
+            var sp = new ScratchesPage(dbContext, cwp.BindingContext);
+            var hp = new HistoryPage(dbContext);
+
+            Children.Add(new NavigationPage(cwp) {Title = "Текущие планы"});
+            Children.Add(new NavigationPage(sp) {Title = "Черновики"});
+            Children.Add(new NavigationPage(hp) {Title = "История"});
         }
     }
 }

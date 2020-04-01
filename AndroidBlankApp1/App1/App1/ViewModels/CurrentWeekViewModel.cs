@@ -2,11 +2,13 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Windows.Input;
 using App1.Data;
 using App1.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
+using Task = System.Threading.Tasks.Task;
 
 namespace App1.ViewModels
 {
@@ -16,13 +18,10 @@ namespace App1.ViewModels
         
         private DbContext _dbContext;
         private DailyPlanViewModel selectedPlan;
-        
+        private bool _highlight;
+
         public INavigation Navigation { get; set;}
         public ObservableCollection<DailyPlanViewModel> Plans { get; set; }
-        public ICommand BackCommand { protected set; get; }
-        public ICommand GoToScratchesCommand { protected set; get; }
-
-        public ICommand GoToHistoryCommand { get; set; }
         public ICommand SavePlanCommand { get; set; }
 
         public CurrentWeekViewModel(DbContext dbContext, INavigation navigation)
@@ -30,26 +29,48 @@ namespace App1.ViewModels
             _dbContext = dbContext;
             Navigation = navigation;
 
+            var now = DateTime.Now;
+
+            var expiredPlans = _dbContext.DailyPlans.GetItems()
+                .Where(p => 
+                    !p.IsExpired && p.Date <= now && 
+                    p.Date.StartOfWeek() < now.StartOfWeek())
+                .ToList();
+
+            foreach (var plan in expiredPlans)
+            {
+                plan.IsExpired = true;
+                _dbContext.DailyPlans.SaveItem(plan);
+            }
+
             var dailyPlans = _dbContext.DailyPlans.GetItems()
                 .Where(p => !p.IsScratch && !p.IsExpired)
-                .Select(x => new DailyPlanViewModel(_dbContext, x) {WeekViewModel = this});
+                .OrderBy(p => p.Date)
+                .Select(x => new DailyPlanViewModel(_dbContext, x,this));
 
             Plans = new ObservableCollection<DailyPlanViewModel>();
             
             dailyPlans.ForEach(d => Plans.Add(d));
 
-            BackCommand = new Command(Back);
-            GoToScratchesCommand = new Command(GoToScratches);
-            GoToHistoryCommand = new Command(GoToHistory);
+            if (!Application.Current.Properties.ContainsKey("highlight"))
+            {
+                Application.Current.Properties["highlight"] = false;
+                Highlight = false;
+            }
+            else
+            {
+                Highlight = (bool) Application.Current.Properties["highlight"];
+            }
+
             SavePlanCommand = new Command(SavePlan);
         }
-        
+
         protected void OnPropertyChanged(string propName)
         {
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(propName));
         }
-        
+
         public DailyPlanViewModel SelectedPlan
         {
             get { return selectedPlan; }
@@ -69,22 +90,26 @@ namespace App1.ViewModels
         {
             Navigation.PopAsync();
         }
-
-        private void GoToScratches()
-        {
-            Navigation.PushAsync(new ScratchesPage(_dbContext));
-        }
         
-        private void GoToHistory()
-        {
-            //Navigation.PushAsync(new HistoryPage(_dbContext));
-        }
-
         private void SavePlan(object planObject)
         {
             if (planObject is DailyPlanViewModel plan)
             {
                 _dbContext.DailyPlans.SaveItem(plan.Plan);
+                plan.Tasks.ForEach(task => _dbContext.Tasks.SaveItem(task.Task));
+            }
+            Back();
+        }
+
+        public bool Highlight
+        {
+            get { return _highlight; }
+            set
+            {
+                _highlight = value;
+                Application.Current.Properties["highlight"] = value;
+                OnPropertyChanged("Highlight");
+                Plans?.ForEach(p => { p.Highlight = value; });
             }
         }
     }

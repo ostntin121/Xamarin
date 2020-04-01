@@ -30,7 +30,7 @@ namespace App1
         {
             InitializeComponent();
 
-            MainPage = new NavigationPage(new CurrentWeekPage(Database));
+            MainPage = new MainPage(Database);
         }
 
         protected override void OnStart()

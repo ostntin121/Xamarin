@@ -2,55 +2,62 @@
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:customRenderers="clr-namespace:App1.CustomRenderers"
              x:Class="App1.ScratchPage">
     <ContentPage.Content>
         <StackLayout>
-            <StackLayout Orientation="Horizontal">
-                <Label Margin="20,15,20,0" WidthRequest="200" Text="Название" />
-                <Entry Margin="20,0,20,0" WidthRequest="200" Text="{Binding Name}" />
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.4*"/>
+                        <ColumnDefinition Width="0.6*"/>
+                    </Grid.ColumnDefinitions>
+                
+                    <Label Margin="10,15,10,0" Text="Название" Grid.Row="0" Grid.Column="0" />
+                    <Entry Margin="10,0,10,0" Text="{Binding Name}" Grid.Row="0" Grid.Column="1" />
+                    
+                    <Label Margin="10,15,10,0" Text="Дата прохождения" Grid.Row="1" Grid.Column="0" />
+                    <DatePicker Margin="10,0,10,0" Date="{Binding Date}" Grid.Row="1" Grid.Column="1"/>
+                </Grid>
+                <Button Text="Добавить задачу" Style="{StaticResource CenterButton}" 
+                        BackgroundColor="MediumSeaGreen"
+                        Command="{Binding AddTaskCommand}"/>
+                <ListView x:Name="TasksList" ItemsSource="{Binding Tasks}" ItemTapped="Tasks_ItemTapped">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <ViewCell.View>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Margin="20,15,10,0" x:Name="label" Text="{Binding Number}" 
+                                               TextColor="Black" FontSize="13"/>
+                                        <Entry Margin="10,0,20,0" WidthRequest="300" Placeholder="Новая задача"
+                                            x:Key="{Binding Position}" x:Name="taskEntry"
+                                            Text="{Binding Task.Name}" TextColor="Black" FontSize="13"
+                                        />
+                                    </StackLayout>
+                                </ViewCell.View>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <StackLayout Orientation="Horizontal" Padding="20">
+                    <Button Text="Сохранить" FontSize="11" CornerRadius="3" HorizontalOptions="Start"
+                            TextColor="White" BorderColor="Transparent" BackgroundColor="DodgerBlue"
+                            IsEnabled="{Binding CanSave}"
+                            Command="{Binding ScratchesViewModel.SaveScratchCommand}" 
+                            CommandParameter="{Binding}" />
+                    <Button Text="Сохранить как план" FontSize="11" CornerRadius="3" HorizontalOptions="Center"
+                            TextColor="White" BorderColor="Transparent" BackgroundColor="DodgerBlue"
+                            IsEnabled="{Binding CanSaveAsPlan}"
+                            Command="{Binding ScratchesViewModel.SavePlanCommand}" 
+                            CommandParameter="{Binding}" />
+                    <Button Text="Удалить" CornerRadius="3" FontSize="11" HorizontalOptions="EndAndExpand"
+                            TextColor="White" BorderColor="Transparent" BackgroundColor="IndianRed"
+                            Command="{Binding ScratchesViewModel.DeleteScratchCommand}" 
+                            CommandParameter="{Binding}" />
+                </StackLayout>
             </StackLayout>
-            <StackLayout Orientation="Horizontal">
-                <Label Margin="20,15,20,0" WidthRequest="200" Text="Дата прохождения" />
-                <DatePicker Margin="20,0,20,0" Date="{Binding Date}"></DatePicker>
-            </StackLayout>
-            <Button Text="Добавить задачу" WidthRequest="200" Margin="50" CornerRadius="3"
-                    TextColor="White" BorderColor="Transparent" BackgroundColor="MediumSeaGreen"
-                    Command="{Binding AddTaskCommand}"></Button>
-            <ListView x:Name="TasksList" ItemsSource="{Binding Tasks}" ItemTapped="Tasks_ItemTapped">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <ViewCell.View>
-                                <StackLayout Orientation="Horizontal">
-                                    <Label Margin="20,15,10,0" x:Name="label" Text="{Binding Number}" 
-                                           TextColor="Black" FontSize="13"/>
-                                    <Entry Margin="10,0,20,0" WidthRequest="300"
-                                        x:Key="{Binding Position}" x:Name="taskEntry"
-                                        Text="{Binding Task.Name}" TextColor="Black" FontSize="13"
-                                    />
-                                </StackLayout>
-                            </ViewCell.View>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-            <StackLayout Orientation="Horizontal" Padding="10,20,10,20">
-                <Button Text="Сохранить" CornerRadius="3"
-                        TextColor="White" BorderColor="Transparent" BackgroundColor="DodgerBlue"
-                        IsEnabled="{Binding CanSave}"
-                        Command="{Binding ScratchesViewModel.SaveScratchCommand}" 
-                        CommandParameter="{Binding}" />
-                <Button Text="Сохранить как план" CornerRadius="3"
-                        TextColor="White" BorderColor="Transparent" BackgroundColor="DodgerBlue"
-                        IsEnabled="{Binding CanSaveAsPlan}"
-                        Command="{Binding ScratchesViewModel.SavePlanCommand}" 
-                        CommandParameter="{Binding}" />
-                <Button Text="Удалить" CornerRadius="3"
-                        TextColor="White" BorderColor="Transparent" BackgroundColor="IndianRed"
-                        Command="{Binding ScratchesViewModel.DeleteScratchCommand}" 
-                        CommandParameter="{Binding}" />
-            </StackLayout>
-        </StackLayout>
     </ContentPage.Content>
 </ContentPage>

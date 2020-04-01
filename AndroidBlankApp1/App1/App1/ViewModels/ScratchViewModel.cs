@@ -41,7 +41,7 @@ namespace App1.ViewModels
             
             var tasks = _dbContext.Tasks.GetItems()
                 .Where(x => x.PlanId == Plan.Id)
-                .Select((x, i) => new TaskViewModel(x, i));
+                .Select((x, i) => new TaskViewModel(x, i, null));
 
             tasks.ForEach(t => Tasks.Add(t));
         }
@@ -90,12 +90,7 @@ namespace App1.ViewModels
 
         public void AddTask()
         {
-            Tasks.ForEach(t => t.Tapped = false);
-            Tasks.Add(new TaskViewModel(new Task { Name = "Новая задача" }, Tasks.Count)
-            {
-                Tapped = true
-            });
+            Tasks.Add(new TaskViewModel(new Task(), Tasks.Count, null));
         }
-
     }
 }

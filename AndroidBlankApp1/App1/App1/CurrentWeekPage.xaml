@@ -2,28 +2,38 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:App1"
-             x:Class="App1.CurrentWeekPage"
-             Title="Эта неделя">
+             x:Class="App1.CurrentWeekPage">
+    <ContentPage.Resources>
+        <local:ColorConverter x:Key="ColorConverter"></local:ColorConverter>
+        <local:HighlightColorConverter x:Key="HighlightColorConverter"></local:HighlightColorConverter>
+    </ContentPage.Resources>
     <ContentPage.Content>
-    <StackLayout>
-        <ListView x:Name="DailyPlansList" ItemsSource="{Binding Plans}"
-                  SelectedItem="{Binding SelectedPlan, Mode=TwoWay}" HasUnevenRows="True">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <ViewCell.View>
-                            <StackLayout>
-                                <Label Text="{Binding Title}" FontSize="Medium" />
-                                <Label Text="{Binding Name}" FontSize="Medium" />
-                                <Label TextColor="DarkGray" Text="{Binding Status}" FontSize="Small" />
-                            </StackLayout>
-                        </ViewCell.View>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-        <Button Text="Черновики" Command="{Binding GoToScratchesCommand}"></Button>
-        <Button Text="История" Command="{Binding GoToHistoryCommand}"></Button>
-    </StackLayout>
-        </ContentPage.Content>
+        <StackLayout>
+                <ListView x:Name="DailyPlansList" ItemsSource="{Binding Plans}" ItemTapped="Tasks_ItemTapped"
+                      SelectedItem="{Binding SelectedPlan, Mode=TwoWay}" HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.View>
+                                <StackLayout 
+                                    BackgroundColor="{Binding Highlight, Converter={StaticResource HighlightColorConverter}}" 
+                                    Padding="20,10,20,10">
+                                    <Label Text="{Binding Title}" FontSize="Small" 
+                                           TextDecorations="Underline" FontAttributes="Italic" 
+                                           HorizontalTextAlignment="End" />
+                                    <Label Text="{Binding Name}" FontSize="Medium" />
+                                    <Label TextColor="{Binding IsSuccessful, Converter={StaticResource ColorConverter}}"
+                                           Text="{Binding Status}" FontSize="Small" />
+                                </StackLayout>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                </ListView>
+                <StackLayout VerticalOptions="EndAndExpand" Padding="20" Orientation="Horizontal">
+                    <Label Margin="0,0,10,0" Text="Выделять планы на сегодня"/>
+                    <Switch Margin="10,0,0,0" IsToggled="{Binding Highlight}"/>
+                </StackLayout>
+            </StackLayout>
+    </ContentPage.Content>
 </ContentPage>

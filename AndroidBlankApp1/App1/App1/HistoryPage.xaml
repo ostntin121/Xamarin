@@ -2,12 +2,34 @@
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="App1.HistoryPage">
+             x:Class="App1.HistoryPage"
+             xmlns:local="clr-namespace:App1">
+    <ContentPage.Resources>
+        <local:ColorConverter x:Key="ColorConverter"></local:ColorConverter>
+    </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Hello, world!"
-                   VerticalOptions="CenterAndExpand"
-                   HorizontalOptions="CenterAndExpand" />
-        </StackLayout>
+                <ListView x:Name="HistoryList" ItemsSource="{Binding Plans}" ItemTapped="Tasks_ItemTapped"
+                          SelectedItem="{Binding SelectedPlan, Mode=TwoWay}" HasUnevenRows="True">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <ViewCell.View>
+                                    <StackLayout>
+                                        <StackLayout Padding="20,10,10,20">
+                                            <Label Text="{Binding Title}" FontSize="Small" 
+                                                   TextDecorations="Underline" FontAttributes="Italic" 
+                                                   HorizontalTextAlignment="End" />
+                                            <Label Text="{Binding Name}" FontSize="Medium" />
+                                            <Label TextColor="{Binding IsSuccessful, Converter={StaticResource ColorConverter}}"
+                                                   Text="{Binding Status}" FontSize="Small" />
+                                        </StackLayout>
+                                    </StackLayout>
+                                </ViewCell.View>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
     </ContentPage.Content>
 </ContentPage>

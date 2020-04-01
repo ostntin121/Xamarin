@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using App1.Models;
 
 namespace App1.ViewModels
@@ -6,11 +7,12 @@ namespace App1.ViewModels
     public class TaskViewModel: INotifyPropertyChanged
     {
         public Task Task { get; set; }
-        public bool Tapped { get; set; }
+
+        public DailyPlanViewModel dailyPlanViewModel;
 
         public int Position { get; set; }
 
-        public int Number => Position + 1;
+        public string Number => $"{Position + 1}.";
 
         public bool IsCompleted
         {
@@ -20,6 +22,12 @@ namespace App1.ViewModels
                 if (Task.IsCompleted != value)
                 {
                     Task.IsCompleted = value;
+                    
+                    if (dailyPlanViewModel != null)
+                    {
+                        dailyPlanViewModel.UpdateCompletedTasks();
+                    }
+                    
                     OnPropertyChanged("IsCompleted");
                 }
             }
@@ -38,11 +46,11 @@ namespace App1.ViewModels
             }
         }
 
-        public TaskViewModel(Task task, int position)
+        public TaskViewModel(Task task, int position, DailyPlanViewModel viewModel)
         {
             Task = task;
-            Tapped = false;
             Position = position;
+            dailyPlanViewModel = viewModel;
         }
         
         protected void OnPropertyChanged(string propName)

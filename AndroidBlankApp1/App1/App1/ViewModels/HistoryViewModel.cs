@@ -10,7 +10,7 @@ using Xamarin.Forms.Internals;
 
 namespace App1.ViewModels
 {
-    public class CurrentWeekViewModel: INotifyPropertyChanged
+    public class HistoryViewModel: INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         
@@ -19,29 +19,33 @@ namespace App1.ViewModels
         
         public INavigation Navigation { get; set;}
         public ObservableCollection<DailyPlanViewModel> Plans { get; set; }
-        public ICommand BackCommand { protected set; get; }
-        public ICommand GoToScratchesCommand { protected set; get; }
-
-        public ICommand GoToHistoryCommand { get; set; }
-        public ICommand SavePlanCommand { get; set; }
-
-        public CurrentWeekViewModel(DbContext dbContext, INavigation navigation)
+        public HistoryViewModel(DbContext dbContext, INavigation navigation)
         {
             _dbContext = dbContext;
             Navigation = navigation;
+            
+            var now = DateTime.Now;
+
+            var expiredPlans = _dbContext.DailyPlans.GetItems()
+                .Where(p => 
+                    !p.IsExpired && p.Date <= now && 
+                    p.Date.StartOfWeek() < now.StartOfWeek())
+                .ToList();
+
+            foreach (var plan in expiredPlans)
+            {
+                plan.IsExpired = true;
+                _dbContext.DailyPlans.SaveItem(plan);
+            }
 
             var dailyPlans = _dbContext.DailyPlans.GetItems()
-                .Where(p => !p.IsScratch && !p.IsExpired)
-                .Select(x => new DailyPlanViewModel(_dbContext, x) {WeekViewModel = this});
+                .Where(p => !p.IsScratch && p.IsExpired)
+                .OrderBy(p => p.Date)
+                .Select(x => new DailyPlanViewModel(_dbContext, x, null));
 
             Plans = new ObservableCollection<DailyPlanViewModel>();
             
             dailyPlans.ForEach(d => Plans.Add(d));
-
-            BackCommand = new Command(Back);
-            GoToScratchesCommand = new Command(GoToScratches);
-            GoToHistoryCommand = new Command(GoToHistory);
-            SavePlanCommand = new Command(SavePlan);
         }
         
         protected void OnPropertyChanged(string propName)
@@ -68,24 +72,6 @@ namespace App1.ViewModels
         private void Back()
         {
             Navigation.PopAsync();
-        }
-
-        private void GoToScratches()
-        {
-            Navigation.PushAsync(new ScratchesPage(_dbContext));
-        }
-        
-        private void GoToHistory()
-        {
-            //Navigation.PushAsync(new HistoryPage(_dbContext));
-        }
-
-        private void SavePlan(object planObject)
-        {
-            if (planObject is DailyPlanViewModel plan)
-            {
-                _dbContext.DailyPlans.SaveItem(plan.Plan);
-            }
         }
     }
 }

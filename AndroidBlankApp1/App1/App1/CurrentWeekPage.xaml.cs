@@ -14,7 +14,13 @@ namespace App1
         {
             _dbContext = dbContext;
             InitializeComponent();
+
             BindingContext = new CurrentWeekViewModel(_dbContext, Navigation);
+        }
+
+        private void Tasks_ItemTapped(object sender, ItemTappedEventArgs e)
+        {
+            ((ListView)sender).SelectedItem = null;
         }
     }
 }

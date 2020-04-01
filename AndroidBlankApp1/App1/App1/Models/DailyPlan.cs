@@ -19,6 +19,7 @@ namespace App1.Models
         {
             IsScratch = true;
             IsExpired = false;
+            Date = DateTime.Now;
         }
     }
 }
