@@ -16,22 +16,19 @@ namespace App1.ViewModels
         
         private DbContext _dbContext;
         private ScratchViewModel selectedScratch;
+        private CurrentWeekViewModel _currentWeekViewModel;
         public INavigation Navigation { get; set;}
         
         public ObservableCollection<ScratchViewModel> Scratches { get; set; }
         public ICommand CreateScratchCommand { protected set; get; }
         public ICommand DeleteScratchCommand { protected set; get; }
         public ICommand SaveScratchCommand { protected set; get; }
-
         public ICommand SavePlanCommand { protected set; get; }
 
-        public ICommand GoToHistoryCommand { get; set; }
-
-        public ICommand GoToCurrentWeekCommand { get; set; }
-
-        public ScratchesViewModel(DbContext dbContext, INavigation navigation)
+        public ScratchesViewModel(DbContext dbContext, INavigation navigation, CurrentWeekViewModel currentWeekViewModel)
         {
             _dbContext = dbContext;
+            _currentWeekViewModel = currentWeekViewModel;
             Navigation = navigation;
             
             var scratches = _dbContext.DailyPlans.GetItems()
@@ -46,7 +43,6 @@ namespace App1.ViewModels
             DeleteScratchCommand = new Command(DeleteScratch);
             SaveScratchCommand = new Command(SaveScratch);
             SavePlanCommand = new Command(SavePlan);
-            GoToCurrentWeekCommand = new Command(GoToCurrentWeek);
         }
         
         protected void OnPropertyChanged(string propName)
@@ -94,13 +90,25 @@ namespace App1.ViewModels
         {
             if (scratchObject is ScratchViewModel scratch)
             {
-                if (Scratches.Contains(scratch))
-                {
-                    Scratches.Remove(scratch);   
-                }
-                
                 scratch.Plan.IsScratch = false;
                 _dbContext.DailyPlans.SaveItem(scratch.Plan);
+                
+                scratch.Tasks.ForEach(t =>
+                {
+                    t.Task.PlanId = scratch.Plan.Id;
+                    _dbContext.Tasks.SaveItem(t.Task);
+                });
+
+                if (_currentWeekViewModel.Plans.All(p => p.Plan.Id != scratch.Plan.Id))
+                {
+                    var viewModel = new DailyPlanViewModel(_dbContext, scratch.Plan, _currentWeekViewModel);
+                    _currentWeekViewModel.Plans.Add(viewModel);
+                }
+                
+                if (Scratches.Contains(scratch))
+                {
+                    Scratches.Remove(scratch);
+                }
             }
             Back();
         }
@@ -116,7 +124,7 @@ namespace App1.ViewModels
             {
                 var id = _dbContext.DailyPlans.SaveItem(scratch.Plan);
 
-                if (Scratches.All(s => s.Plan.Id != id))
+                if (!Scratches.Contains(scratch))
                 {
                     Scratches.Add(scratch);    
                 }
@@ -129,16 +137,6 @@ namespace App1.ViewModels
                 
             }
             Back();
-        }
-        
-        private void GoToCurrentWeek()
-        {
-            Navigation.PushAsync(new CurrentWeekPage(_dbContext));
-        }
-
-        private void GoToHistory()
-        {
-            //Navigation.PushAsync(new HistoryPage(_dbContext));
         }
     }
 }
