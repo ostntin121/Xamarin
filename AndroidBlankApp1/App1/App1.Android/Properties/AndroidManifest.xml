@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="1.0" package="com.companyname.App1">
     <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="29" />
-    <application android:label="App1.Android"></application>
+    <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
+    <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <application android:label="App1.Android">
+        <provider android:name="android.support.v4.content.FileProvider"
+                  android:authorities="${applicationId}.fileprovider"
+                  android:exported="false"
+                  android:grantUriPermissions="true">
+
+            <meta-data android:name="android.support.FILE_PROVIDER_PATHS"
+                       android:resource="@xml/file_paths"></meta-data>
+        </provider>
+    </application>
 </manifest>

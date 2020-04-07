@@ -10,14 +10,18 @@ using Xamarin.Forms.Internals;
 
 namespace App1.ViewModels
 {
-    public class ScratchViewModel: INotifyPropertyChanged
+    public class ScratchViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
         private ScratchesViewModel _scratchesViewModel;
         private DbContext _dbContext;
-        
+
         public bool Tapped { get; set; }
+
+        public MediaSource _audioPath;
+        public bool _canSave;
+        public bool _canSaveAsPath;
 
         public ObservableCollection<TaskViewModel> Tasks { get; set; }
 
@@ -36,14 +40,20 @@ namespace App1.ViewModels
             _dbContext = dbContext;
             Plan = plan;
             Tasks = new ObservableCollection<TaskViewModel>();
-            
+
             AddTaskCommand = new Command(AddTask);
-            
+
+            AudioPath = MediaSource.FromUri(new Uri(
+                "https://sec.ch9.ms/ch9/5d93/a1eab4bf-3288-4faf-81c4-294402a85d93/XamarinShow_mid.mp4"));
+
             var tasks = _dbContext.Tasks.GetItems()
                 .Where(x => x.PlanId == Plan.Id)
-                .Select((x, i) => new TaskViewModel(x, i, null));
+                .Select((x, i) => new TaskViewModel(x, i, null, null));
 
             tasks.ForEach(t => Tasks.Add(t));
+            
+            CanSave = !String.IsNullOrEmpty(Name) && Tasks.Count > 0;
+            CanSaveAsPlan = CanSave && Plan.Date > DateTime.Now;
         }
 
         public ScratchesViewModel ScratchesViewModel
@@ -58,7 +68,17 @@ namespace App1.ViewModels
                 }
             }
         }
-        
+
+        public MediaSource AudioPath
+        {
+            get { return _audioPath; }
+            set
+            {
+                _audioPath = value;
+                OnPropertyChanged("AudioPath");
+            }
+        }
+
         public string Name
         {
             get { return Plan.Name; }
@@ -84,13 +104,35 @@ namespace App1.ViewModels
                 }
             }
         }
-        
-        public bool CanSave => Tasks.Count > 0;
-        public bool CanSaveAsPlan => CanSave && Plan.Date > DateTime.Now;
+
+        public bool CanSave
+        {
+            get
+            {
+                return _canSave && !String.IsNullOrEmpty(Name) && Tasks.Count > 0;
+            }
+            set
+            {
+                _canSave = value;
+                OnPropertyChanged("CanSave");
+            }
+        }
+        public bool CanSaveAsPlan
+        {
+            get
+            {
+                return _canSaveAsPath && CanSave && Plan.Date > DateTime.Now;
+            }
+            set
+            {
+                _canSaveAsPath = value;
+                OnPropertyChanged("CanSaveAsPlan");
+            }
+        }
 
         public void AddTask()
         {
-            Tasks.Add(new TaskViewModel(new Task(), Tasks.Count, null));
+            Tasks.Add(new TaskViewModel(new Task(), Tasks.Count, null, this));
         }
     }
 }

@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using App1.Data;
 using App1.ViewModels;
+using Plugin.Media;
+using Plugin.Media.Abstractions;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -20,6 +22,7 @@ namespace App1
         {
             _dbContext = dbContext;
             InitializeComponent();
+            
             ViewModel = scratch;
             this.BindingContext = ViewModel;
         }
@@ -27,6 +30,24 @@ namespace App1
         private void Tasks_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             ((ListView)sender).SelectedItem = null;
+        }
+        
+        void OnPlayPauseButtonClicked(object sender, EventArgs args)
+        {
+            if (mediaElement.CurrentState == MediaElementState.Stopped ||
+                mediaElement.CurrentState == MediaElementState.Paused)
+            {
+                mediaElement.Play();
+            }
+            else if (mediaElement.CurrentState == MediaElementState.Playing)
+            {
+                mediaElement.Pause();
+            }
+        }
+
+        void OnStopButtonClicked(object sender, EventArgs args)
+        {
+            mediaElement.Stop();
         }
     }
 }

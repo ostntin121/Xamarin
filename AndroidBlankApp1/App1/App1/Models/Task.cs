@@ -7,6 +7,10 @@ namespace App1.Models
     {
         public string Name { get; set; }
         public int PlanId { get; set; }
+
+        public string ImagePath { get; set; }
+
+        public string AudioPath { get; set; }
         public bool IsCompleted { get; set; }
     }
 }

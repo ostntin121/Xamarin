@@ -21,7 +21,7 @@
                              HasUnevenRows="True" ItemTapped="Tasks_ItemTapped">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <ViewCell Height="100">
+                                <ViewCell Height="250">
                                     <ViewCell.View>
                                         <StackLayout>
                                             <StackLayout Orientation="Horizontal">
@@ -39,6 +39,8 @@
                                                         IsEnabled="{Binding Source={x:Reference Page}, Path=BindingContext.IsNotExpired}" 
                                                         IsToggled="{Binding IsCompleted}" /> 
                                             </StackLayout>
+                                            <Image HorizontalOptions="Center" HeightRequest="150" 
+                                                   IsVisible="{Binding HasImage}" Source="{Binding ImagePath}"/>
                                         </StackLayout>
                                     </ViewCell.View>
                                 </ViewCell>

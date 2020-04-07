@@ -33,8 +33,8 @@ namespace App1.ViewModels
 
             var expiredPlans = _dbContext.DailyPlans.GetItems()
                 .Where(p => 
-                    !p.IsExpired && p.Date <= now && 
-                    p.Date.StartOfWeek() < now.StartOfWeek())
+                    !p.IsExpired && p.Date <= now &&
+                    p.Date.ToShortDateString() != now.ToShortDateString())
                 .ToList();
 
             foreach (var plan in expiredPlans)

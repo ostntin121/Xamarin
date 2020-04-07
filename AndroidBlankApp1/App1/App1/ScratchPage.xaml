@@ -5,37 +5,97 @@
              x:Class="App1.ScratchPage">
     <ContentPage.Content>
         <StackLayout>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.4*"/>
-                        <ColumnDefinition Width="0.6*"/>
-                    </Grid.ColumnDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.4*"/>
+                    <ColumnDefinition Width="0.6*"/>
+                </Grid.ColumnDefinitions>
+            
+                <Label Margin="10,15,10,0" Text="Название" Grid.Row="0" Grid.Column="0" />
+                <Entry Margin="10,0,10,0" Text="{Binding Name}" Grid.Row="0" Grid.Column="1" />
                 
-                    <Label Margin="10,15,10,0" Text="Название" Grid.Row="0" Grid.Column="0" />
-                    <Entry Margin="10,0,10,0" Text="{Binding Name}" Grid.Row="0" Grid.Column="1" />
-                    
-                    <Label Margin="10,15,10,0" Text="Дата прохождения" Grid.Row="1" Grid.Column="0" />
-                    <DatePicker Margin="10,0,10,0" Date="{Binding Date}" Grid.Row="1" Grid.Column="1"/>
-                </Grid>
+                <Label Margin="10,15,10,0" Text="Дата прохождения" Grid.Row="1" Grid.Column="0" />
+                <DatePicker Margin="10,0,10,0" Date="{Binding Date}" Grid.Row="1" Grid.Column="1"/>
+            </Grid>
+            
+            <Grid>
+                <MediaElement x:Name="mediaElement" AutoPlay="False" ShowsPlaybackControls="True" 
+                              Source="{Binding AudioPath}" WidthRequest="1" HeightRequest="1" Opacity="0"/>
+                <StackLayout BindingContext="{x:Reference mediaElement}">
+                <Button Text="&#x25B6;&#xFE0F;"
+                        HorizontalOptions="Start"
+                        Clicked="OnPlayPauseButtonClicked">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button"
+                                         Binding="{Binding CurrentState}"
+                                         Value="{x:Static MediaElementState.Playing}">
+                                <Setter Property="Text"
+                                        Value="&#x23F8;" />
+                            </DataTrigger>
+                            <DataTrigger TargetType="Button"
+                                         Binding="{Binding CurrentState}"
+                                         Value="{x:Static MediaElementState.Buffering}">
+                                <Setter Property="IsEnabled"
+                                        Value="False" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                    <Button Text="&#x23F9;"
+                            HorizontalOptions="Start"
+                            Clicked="OnStopButtonClicked">
+                        <Button.Triggers>
+                            <DataTrigger TargetType="Button"
+                                         Binding="{Binding CurrentState}"
+                                         Value="{x:Static MediaElementState.Stopped}">
+                                <Setter Property="IsEnabled"
+                                        Value="False" />
+                            </DataTrigger>
+                        </Button.Triggers>
+                    </Button>
+                </StackLayout>
+            </Grid>
+            
                 <Button Text="Добавить задачу" Style="{StaticResource CenterButton}" 
                         BackgroundColor="MediumSeaGreen"
                         Command="{Binding AddTaskCommand}"/>
-                <ListView x:Name="TasksList" ItemsSource="{Binding Tasks}" ItemTapped="Tasks_ItemTapped">
+                <ListView x:Name="TasksList" ItemsSource="{Binding Tasks}" ItemTapped="Tasks_ItemTapped" RowHeight="400">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
                                 <ViewCell.View>
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label Margin="20,15,10,0" x:Name="label" Text="{Binding Number}" 
-                                               TextColor="Black" FontSize="13"/>
-                                        <Entry Margin="10,0,20,0" WidthRequest="300" Placeholder="Новая задача"
-                                            x:Key="{Binding Position}" x:Name="taskEntry"
-                                            Text="{Binding Task.Name}" TextColor="Black" FontSize="13"
-                                        />
+                                    <StackLayout Orientation="Vertical" >
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Margin="20,15,10,0" x:Name="label" Text="{Binding Number}" 
+                                                   TextColor="Black" FontSize="13"/>
+                                            <Entry Margin="10,0,20,0" WidthRequest="300" Placeholder="Новая задача"
+                                                x:Key="{Binding Position}" x:Name="taskEntry"
+                                                Text="{Binding Task.Name}" TextColor="Black" FontSize="13"
+                                            />
+                                        </StackLayout>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Button TextColor="White" BorderColor="Transparent" BackgroundColor="Orange" 
+                                                    Margin="10" Text="Сделать фото" Command="{Binding CreatePhotoCommand}"/>
+                                            <Button TextColor="White" BorderColor="Transparent" BackgroundColor="Orange" 
+                                                    Margin="10" Text="Выбрать изображение" Command="{Binding ChooseImageCommand}" />
+                                        </StackLayout>
+                                        <Image HorizontalOptions="Center" HeightRequest="150" 
+                                               IsVisible="{Binding HasImage}" Source="{Binding ImagePath}"/>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Button TextColor="White" BorderColor="Transparent"
+                                                    BackgroundColor="Orange" IsEnabled="{Binding CanRecordAudio}"
+                                                    Margin="10" Text="Записать звук" Command="{Binding RecordAudioCommand}"/>
+                                            <Button TextColor="White" BorderColor="Transparent" 
+                                                    BackgroundColor="Orange" IsEnabled="{Binding CanStopRecording}"
+                                                    Margin="10" Text="Остановить запись" Command="{Binding StopRecordAudioCommand}" />
+                                        </StackLayout>
+                                        <Button TextColor="White" BorderColor="Transparent" HorizontalOptions="Center" 
+                                                BackgroundColor="Orange" IsVisible="{Binding HasAudio}" 
+                                                IsEnabled="{Binding CanRecordAudio}"
+                                                Margin="10" Text="Открыть запись" Command="{Binding LoadAudioCommand}" />
                                     </StackLayout>
                                 </ViewCell.View>
                             </ViewCell>
@@ -43,17 +103,17 @@
                     </ListView.ItemTemplate>
                 </ListView>
                 <StackLayout Orientation="Horizontal" Padding="20">
-                    <Button Text="Сохранить" FontSize="11" CornerRadius="3" HorizontalOptions="Start"
+                    <Button Text="Сохранить" FontSize="12" CornerRadius="3" HorizontalOptions="Start"
                             TextColor="White" BorderColor="Transparent" BackgroundColor="DodgerBlue"
                             IsEnabled="{Binding CanSave}"
                             Command="{Binding ScratchesViewModel.SaveScratchCommand}" 
                             CommandParameter="{Binding}" />
-                    <Button Text="Сохранить как план" FontSize="11" CornerRadius="3" HorizontalOptions="Center"
+                    <Button Text="Сохранить как план" FontSize="12" CornerRadius="3" HorizontalOptions="Center"
                             TextColor="White" BorderColor="Transparent" BackgroundColor="DodgerBlue"
                             IsEnabled="{Binding CanSaveAsPlan}"
                             Command="{Binding ScratchesViewModel.SavePlanCommand}" 
                             CommandParameter="{Binding}" />
-                    <Button Text="Удалить" CornerRadius="3" FontSize="11" HorizontalOptions="EndAndExpand"
+                    <Button Text="Удалить" CornerRadius="3" FontSize="12" HorizontalOptions="EndAndExpand"
                             TextColor="White" BorderColor="Transparent" BackgroundColor="IndianRed"
                             Command="{Binding ScratchesViewModel.DeleteScratchCommand}" 
                             CommandParameter="{Binding}" />

@@ -44,7 +44,7 @@ namespace App1.ViewModels
             
             var tasks = _dbContext.Tasks.GetItems()
                 .Where(x => x.PlanId == Plan.Id)
-                .Select((x, i) => new TaskViewModel(x, i, this));
+                .Select((x, i) => new TaskViewModel(x, i, this, null));
 
             tasks.ForEach(t => Tasks.Add(t));
 
@@ -52,6 +52,7 @@ namespace App1.ViewModels
             CompletedTasks = Tasks.Count(t => t.IsCompleted);
             Status = GetStatus();
             IsSuccessful = GetSuccess();
+            Highlight = Date == DateTime.Now.ToShortDateString();
         }
 
         public CurrentWeekViewModel WeekViewModel

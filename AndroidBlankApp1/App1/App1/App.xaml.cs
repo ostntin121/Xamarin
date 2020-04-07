@@ -28,6 +28,8 @@ namespace App1
         }
         public App()
         {
+            Device.SetFlags(new string[]{ "MediaElement_Experimental" });
+            
             InitializeComponent();
 
             MainPage = new MainPage(Database);

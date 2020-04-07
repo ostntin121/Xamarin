@@ -46,18 +46,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Plugin.Permissions" Version="6.0.0-beta" />
     <PackageReference Include="sqlite-net" Version="1.6.292" />
     <PackageReference Include="sqlite-net-pcl" Version="1.6.292" />
     <PackageReference Include="SQLite.Net-PCL" Version="3.1.1" />
-    <PackageReference Include="Xamarin.Forms" Version="3.3.0.912540" />
+    <PackageReference Include="Xam.Plugin.Media" Version="5.0.1" />
+    <PackageReference Include="Xamarin.AndroidX.Legacy.Support.V4" Version="1.0.0" />
+    <PackageReference Include="Xamarin.AndroidX.MediaRouter" Version="1.1.0" />
+    <PackageReference Include="Xamarin.Forms" Version="4.6.0.529-pre3" />
     <PackageReference Include="Xamarin.Android.Support.Design" Version="27.0.2.1" />
     <PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="27.0.2.1" />
     <PackageReference Include="Xamarin.Android.Support.v4" Version="27.0.2.1" />
     <PackageReference Include="Xamarin.Android.Support.v7.CardView" Version="27.0.2.1" />
     <PackageReference Include="Xamarin.Android.Support.v7.MediaRouter" Version="27.0.2.1" />
+    <PackageReference Include="Xamarin.Google.Android.Material" Version="1.1.0-rc3" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CryptObjectHelper.cs" />
+    <Compile Include="HomeActivity.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="MyAuthCallbackSample.cs" />
+    <Compile Include="FocusChangeListener.cs" />
+    <Compile Include="AndroidPlayer.cs" />
+    <Compile Include="AndroidRecorder.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -67,22 +78,40 @@
     <None Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidResource Include="Resources\drawable-hdpi\ic_fp_40px.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\ic_fp_40px.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\ic_fp_40px.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\ic_fp_40px.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\ic_fp_40px.png" />
+    <AndroidResource Include="Resources\drawable\ic_error.xml" />
+    <AndroidResource Include="Resources\drawable\ic_fingerprint_error.xml" />
+    <AndroidResource Include="Resources\drawable\ic_fingerprint_success.xml" />
+    <AndroidResource Include="Resources\drawable\ic_secure.xml" />
+    <AndroidResource Include="Resources\layout\activity_AuthenticationCallback.cs" />
+    <AndroidResource Include="Resources\layout\activity_fingerprintmanager_api.axml" />
+    <AndroidResource Include="Resources\layout\activity_main.axml" />
+    <AndroidResource Include="Resources\layout\dialog_scanning_for_fingerprint.axml" />
+    <AndroidResource Include="Resources\layout\panel_error.xml" />
+    <AndroidResource Include="Resources\layout\panel_initial.xml" />
+    <AndroidResource Include="Resources\layout\recyclerview_row.axml" />
     <AndroidResource Include="Resources\layout\Tabbar.axml" />
     <AndroidResource Include="Resources\layout\Toolbar.axml" />
+    <AndroidResource Include="Resources\mipmap-hdpi\Icon.png" />
+    <AndroidResource Include="Resources\mipmap-mdpi\Icon.png" />
+    <AndroidResource Include="Resources\mipmap-xhdpi\Icon.png" />
+    <AndroidResource Include="Resources\mipmap-xxhdpi\Icon.png" />
+    <AndroidResource Include="Resources\mipmap-xxxhdpi\Icon.png" />
+    <AndroidResource Include="Resources\values\dimens.xml" />
+    <AndroidResource Include="Resources\values\strings.xml" />
     <AndroidResource Include="Resources\values\styles.xml" />
     <AndroidResource Include="Resources\values\colors.xml" />
+    <AndroidResource Include="Resources\xml\file_paths.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\App1\App1.csproj">
       <Project>{B4DA2582-DBE1-43A0-9F56-7672C6CF98D9}</Project>
       <Name>App1</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\drawable-hdpi" />
-    <Folder Include="Resources\drawable-xhdpi" />
-    <Folder Include="Resources\drawable-xxhdpi" />
-    <Folder Include="Resources\drawable-xxxhdpi" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>
